@@ -1,0 +1,17 @@
+# ninja log v6
+20	3260	7783260484263351	Flipbook_autogen/timestamp	87290d068c4a2b97
+20	3260	7783260484263351	Flipbook_autogen/mocs_compilation.cpp	87290d068c4a2b97
+20	3260	7783260484263351	C:/ProjectsQt/Flipbook/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/Flipbook_autogen/timestamp	87290d068c4a2b97
+20	3260	7783260484263351	C:/ProjectsQt/Flipbook/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/Flipbook_autogen/mocs_compilation.cpp	87290d068c4a2b97
+3275	9946	7783260488255638	CMakeFiles/Flipbook.dir/Flipbook_autogen/mocs_compilation.cpp.obj	3dbc4b7a7e325968
+3367	10021	7783260489196086	CMakeFiles/Flipbook.dir/mainwindow.cpp.obj	cc53b4c0417c8876
+3286	10211	7783260488376610	CMakeFiles/Flipbook.dir/main.cpp.obj	21c47a9d1ede42bd
+10215	11122	7783260557661002	Flipbook.exe	3b9b121b9d26075e
+152	3494	7783269489075779	Flipbook_autogen/timestamp	87290d068c4a2b97
+152	3494	7783269489075779	Flipbook_autogen/mocs_compilation.cpp	87290d068c4a2b97
+152	3494	7783269489075779	C:/ProjectsQt/Flipbook/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/Flipbook_autogen/timestamp	87290d068c4a2b97
+152	3494	7783269489075779	C:/ProjectsQt/Flipbook/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/Flipbook_autogen/mocs_compilation.cpp	87290d068c4a2b97
+3505	10699	7783269493564775	CMakeFiles/Flipbook.dir/Flipbook_autogen/mocs_compilation.cpp.obj	3dbc4b7a7e325968
+3530	10813	7783269493814629	CMakeFiles/Flipbook.dir/main.cpp.obj	21c47a9d1ede42bd
+3545	14703	7783269493942778	CMakeFiles/Flipbook.dir/mainwindow.cpp.obj	cc53b4c0417c8876
+14713	16541	7783269605646518	Flipbook.exe	3b9b121b9d26075e
