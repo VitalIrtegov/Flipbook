@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-9f3e427dde2d51f63bf0.json",
+					"jsonFile" : "directory-.-Debug-57321438166c9f49122d.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Flipbook::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Flipbook-Debug-a6a0b43237a6d2bfc32d.json",
+					"jsonFile" : "target-Flipbook-Debug-a4e671595bcb7a4cbae2.json",
 					"name" : "Flipbook",
 					"projectIndex" : 0
 				},

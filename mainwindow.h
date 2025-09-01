@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QHBoxLayout>
 
 class QLabel;
 class QPushButton;
@@ -14,23 +15,38 @@ public:
     ~MainWindow();
 
 private slots:
-    void nextStep();
-    void prevStep();
-    void showNoteDialog();
+    void showNextImage();
+    void showPrevImage();
+    void showNotesDialog();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void updateContent();
-    void loadStepText(int stepIndex);
-    QString findTextFileForImage(const QString &imagePath) const;
+    void showWelcomeScreen();
+    void updateImage();
+    void updateWindowSize();
+    void updateButtonPositions();
+    void createProgressIndicator();
+    void updateProgressIndicator();
+    QString getImageSizeText(const QString &imagePath) const;
+    QString loadTextFromFile(const QString &filePath) const;
 
     QLabel *m_imageLabel;
-    QLabel *m_textLabel;
+    QLabel *m_infoLabel;
     QPushButton *m_prevButton;
     QPushButton *m_nextButton;
-    QPushButton *m_noteButton;
 
-    QStringList m_imagePaths;
     int m_currentIndex;
+    QStringList m_imagePaths;
+    QPixmap m_currentPixmap;
+    bool m_isWelcomeScreen;
+    QPushButton *m_notesButton;
+
+    QHBoxLayout *m_progressLayout; // Layout для индикатора прогресса
+    QWidget *m_progressWidget;     // Виджет для индикатора
+    QList<QLabel*> m_progressLabels; // Миниатюры для прогресса
+    void centerCurrentThumbnail();
 };
 
 #endif // MAINWINDOW_H
