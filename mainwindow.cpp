@@ -13,6 +13,8 @@
 #include <QScreen>
 #include <QResizeEvent>
 #include <QTimer>
+#include <QScrollArea>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -60,14 +62,50 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 0, 5);
 
     // 1. Создаем индикатор прогресса БЕЗ прокрутки
-    m_progressWidget = new QWidget(centralWidget);
+    /*m_progressWidget = new QWidget(centralWidget);
     m_progressLayout = new QHBoxLayout(m_progressWidget);
     m_progressLayout->setSpacing(2);
     m_progressLayout->setContentsMargins(5, 5, 5, 5);
 
     m_progressWidget->setStyleSheet("background-color: #f0f0f0; border-bottom: 1px solid #cccccc;");
     m_progressWidget->setFixedHeight(60);
-    m_progressWidget->hide(); // Сначала скрываем
+    m_progressWidget->hide();*/ // Сначала скрываем
+
+    // 1. Создаем индикатор прогресса с НЕВИДИМЫМ скроллером
+    m_progressWidget = new QWidget(centralWidget);
+    QVBoxLayout *progressMainLayout = new QVBoxLayout(m_progressWidget);
+    progressMainLayout->setSpacing(0);
+    progressMainLayout->setContentsMargins(0, 0, 0, 0);
+
+    QScrollArea *scrollArea = new QScrollArea(m_progressWidget);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // Всегда выключен
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);   // Всегда выключен
+
+    scrollArea->setStyleSheet("QScrollArea {"
+                              "border: none;"
+                              "background: transparent;"
+                              "}"
+                              "QScrollArea::horizontalScrollBar {"
+                              "height: 0px;" // Полностью скрываем скроллбар
+                              "background: transparent;"
+                              "}"
+                              "QScrollArea::verticalScrollBar {"
+                              "width: 0px;" // Полностью скрываем скроллбар
+                              "background: transparent;"
+                              "}");
+
+    QWidget *scrollContent = new QWidget();
+    m_progressLayout = new QHBoxLayout(scrollContent);
+    m_progressLayout->setSpacing(5); // Увеличиваем расстояние между миниатюрами
+    m_progressLayout->setContentsMargins(10, 5, 10, 5);
+
+    scrollArea->setWidget(scrollContent);
+    progressMainLayout->addWidget(scrollArea);
+
+    m_progressWidget->setStyleSheet("background-color: #f0f0f0; border-bottom: 1px solid #cccccc;");
+    m_progressWidget->setFixedHeight(60);
+    m_progressWidget->hide();
 
     // 2. Создаем imageLabel
     m_imageLabel = new QLabel(centralWidget);
@@ -424,7 +462,7 @@ void MainWindow::updateWindowSize()
     //setFixedHeight(windowHeight);
 
     // Центрируем текущую миниатюру после изменения размера
-    QTimer::singleShot(50, this, &MainWindow::centerCurrentThumbnail);
+    QTimer::singleShot(100, this, &MainWindow::centerCurrentThumbnail);
 
     // ЯВНО ЗАДАЕМ ГЕОМЕТРИЮ INFO LABEL
     QRect imageRect = m_imageLabel->geometry();
@@ -529,9 +567,6 @@ void MainWindow::createProgressIndicator()
 
     if (m_imagePaths.isEmpty()) return;
 
-    // Добавляем растягивающееся пространство слева
-    m_progressLayout->addStretch();
-
     // Создаем миниатюры для каждого изображения
     for (int i = 0; i < m_imagePaths.size(); ++i) {
         QLabel *thumbLabel = new QLabel();
@@ -558,39 +593,36 @@ void MainWindow::createProgressIndicator()
         m_progressLabels.append(thumbLabel);
     }
 
+    // Автоматически прокручиваем к текущему изображению
+    centerCurrentThumbnail();
+
     // Добавляем растягивающееся пространство справа
-    m_progressLayout->addStretch();
+    //m_progressLayout->addStretch();
 
     // Центрируем текущее изображение
-    centerCurrentThumbnail();
+    //centerCurrentThumbnail();
 }
 
 void MainWindow::centerCurrentThumbnail()
 {
     if (m_currentIndex < 0 || m_currentIndex >= m_progressLabels.size()) return;
 
-    // Принудительно обновляем layout
-    m_progressWidget->update();
-    m_progressWidget->repaint();
-    QApplication::processEvents();
+    // Находим QScrollArea
+    QScrollArea *scrollArea = m_progressWidget->findChild<QScrollArea*>();
+    if (!scrollArea) return;
 
-    // Получаем позицию текущей миниатюры
-    QLabel *currentThumb = m_progressLabels[m_currentIndex];
-    QPoint thumbPos = currentThumb->mapTo(m_progressWidget, QPoint(0, 0));
+    // Даем время на обновление layout
+    QTimer::singleShot(50, this, [this, scrollArea]() {
+        if (m_currentIndex < 0 || m_currentIndex >= m_progressLabels.size()) return;
 
-    // Вычисляем смещение для центрирования
-    int thumbCenterX = thumbPos.x() + currentThumb->width() / 2;
-    int widgetCenterX = m_progressWidget->width() / 2;
-    int offsetX = widgetCenterX - thumbCenterX;
+        QLabel *currentThumb = m_progressLabels[m_currentIndex];
 
-    // Сдвигаем все миниатюры для центрирования текущей
-    for (int i = 0; i < m_progressLayout->count(); ++i) {
-        QLayoutItem *item = m_progressLayout->itemAt(i);
-        if (item && item->widget()) {
-            QWidget *widget = item->widget();
-            if (QLabel *thumb = qobject_cast<QLabel*>(widget)) {
-                thumb->move(thumb->x() + offsetX, thumb->y());
-            }
-        }
-    }
+        // Вычисляем позицию для центрирования
+        int thumbCenterX = currentThumb->x() + currentThumb->width() / 2;
+        int scrollAreaCenterX = scrollArea->viewport()->width() / 2;
+        int scrollPosition = thumbCenterX - scrollAreaCenterX;
+
+        // Устанавливаем позицию прокрутки
+        scrollArea->horizontalScrollBar()->setValue(scrollPosition);
+    });
 }
